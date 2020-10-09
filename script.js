@@ -102,9 +102,6 @@ const shuffleArray = function (array) {
     return array;
 };
 
-
-
-
 window.onload = function () {
     //IF YOU ARE DISPLAYING ALL THE QUESTIONS TOGETHER:
     //HINT: for each question, create a container with the "question"
@@ -113,8 +110,6 @@ window.onload = function () {
     //IF YOU ARE DISPLAYING ONE QUESTION AT A TIME
     //Display first question with a title + radio button
     //when the user select the answer, pick the next question and remove this from the page after added in a varible the users' choice.
-
-
 
     const quizContainer = document.querySelector("#quiz");
     const submitButton = document.querySelector("#submit");
@@ -158,6 +153,12 @@ window.onload = function () {
 
         // Sum all correct answers
         let correctAnswers = 0;
+
+        const input = quizContainer.querySelectorAll("input");
+        console.log(input);
+        input.forEach((input) => {
+            input.disabled = true;
+        });
 
         questions.forEach((question, number) => {
             const answerContainer = answerContainers[number];
