@@ -1,0 +1,33 @@
+body {
+    font-size: larger;
+    font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+        "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+    color: #181717;
+    margin-left: 30px;
+}
+
+.answers {
+    margin: 10px 20px 30px;
+}
+
+.answers label {
+    display: block;
+}
+
+#submit {
+    font-size: 25px;
+    background-color: rgba(34, 153, 103, 0.836);
+    color: #fff;
+    border: 0px;
+    border-radius: 6px;
+    padding: 20px;
+    cursor: pointer;
+    margin: 20px 50px;
+    width: 200px;
+    height: 60px;
+}
+
+#result {
+    font-size: xx-large;
+    margin: 20px 50px 50px;
+}
