@@ -14,6 +14,15 @@ body {
     display: block;
 }
 
+.slide{
+    position: absolute;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.5;
+}
+
 #submit {
     font-size: 25px;
     background-color: rgba(34, 153, 103, 0.836);

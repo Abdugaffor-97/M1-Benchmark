@@ -136,10 +136,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         output.push(
-            `<div class="question">
+            `<div class="slide"
+            <div class="question">
                 ${question.question}
             </div>
-            <div class="answers">${outputChoices.join("")}</div>`
+            <div class="answers">${outputChoices.join("")}</div>
+            </div>`
         );
         // console.log(outputChoices.join());
     });
