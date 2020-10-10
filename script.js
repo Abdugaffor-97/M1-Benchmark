@@ -102,7 +102,10 @@ const shuffleArray = function (array) {
     return array;
 };
 
-window.onload = function () {
+const quizContainer = document.getElementById("quiz");
+const submitButton = document.getElementById("submit");
+
+document.addEventListener("DOMContentLoaded", () => {
     //IF YOU ARE DISPLAYING ALL THE QUESTIONS TOGETHER:
     //HINT: for each question, create a container with the "question"
     //create a radio button https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/radio with, as option the both the correct answer and the incorrect answers
@@ -110,84 +113,80 @@ window.onload = function () {
     //IF YOU ARE DISPLAYING ONE QUESTION AT A TIME
     //Display first question with a title + radio button
     //when the user select the answer, pick the next question and remove this from the page after added in a varible the users' choice.
-
-    const quizContainer = document.querySelector("#quiz");
-    const submitButton = document.querySelector("#submit");
-    const resultContainer = document.querySelector("#result");
-
-    // Store outputs
+    // Storing all of the questions and answer choices
     const output = [];
-
     questions.forEach((question, number) => {
         // console.log(question);
-        // console.log(number);
-        question.incorrect_answers.push(question.correct_answer);
 
-        // Store all of the answers
-        const answers = [];
-        const shuffledArray = shuffleArray(question.incorrect_answers);
-        console.log(shuffledArray);
+        question["choices"] = (
+            question.incorrect_answers.join() + `,${question.correct_answer}`
+        ).split(",");
+        question["choices"] = shuffleArray(question.choices);
+        // console.log(question.choices);
 
-        for (answer in question.incorrect_answers) {
-            // Adding and HTNL radio button
+        let outputChoices = [];
 
-            answers.push(
+        question.choices.forEach((choice, num) => {
+            outputChoices.push(
                 `<label>
-                        <input type="radio" name="question${number}" value="${answer}">
-                        
-                        ${shuffledArray[answer]}
-                    </label>`
+                <input type="radio" name="question${number}" value="${choice}">
+                    ${choice}
+                </label>`
             );
-            // console.log(answer);
-        }
-
-        output.push(`<div class="question">${question.question}</div>
-            <div class=answers>${answers.join("")}</div>`);
-    });
-
-    // Publish question on page
-    quizContainer.innerHTML = output.join("");
-
-    const showResults = function () {
-        const answerContainers = quizContainer.querySelectorAll(".answers");
-
-        // Sum all correct answers
-        let correctAnswers = 0;
-
-        const input = quizContainer.querySelectorAll("input");
-        console.log(input);
-        input.forEach((input) => {
-            input.disabled = true;
         });
 
+        output.push(
+            `<div class="question">
+                ${question.question}
+            </div>
+            <div class="answers">${outputChoices.join("")}</div>`
+        );
+        // console.log(outputChoices.join());
+    });
+    quizContainer.innerHTML = output.join("");
+
+    submitButton.addEventListener("click", function () {
+        const resultContainer = document.getElementById("result");
+
+        const answerContainers = quizContainer.getElementsByClassName(
+            "answers"
+        );
+
+        const questionContainers = quizContainer.getElementsByClassName(
+            "question"
+        );
+
+        // console.log(answerContainers);
+
+        // To store user's correct answers
+        let correctAnswers = 0;
+
+        // }
         questions.forEach((question, number) => {
             const answerContainer = answerContainers[number];
-            const selector = `input[name=question${number}]:checked`;
-            const userAnswer =
-                question.incorrect_answers[
-                    (answerContainer.querySelector(selector) || {}).value
-                ];
+            const questionContainer = questionContainers[number];
+
             // console.log(answerContainer);
+            //
+            const selector = `input[name=question${number}]:checked`;
+
+            userAnswer = (answerContainer.querySelector(selector) || {}).value;
             console.log(userAnswer);
-            // console.log(question.correct_answer);
 
             if (userAnswer === question.correct_answer) {
                 correctAnswers++;
+                questionContainer.style.color = "#26de26";
+
                 console.log(correctAnswers);
-                answerContainer.style.color = "green";
             } else {
-                answerContainer.style.color = "red";
+                questionContainer.style.color = "red";
             }
         });
-
-        resultContainer.innerHTML = `Your Result: ${correctAnswers} correct answer.  Rate: ${
-            100 * (correctAnswers / questions.length)
+        resultContainer.innerHTML = `Your score ${
+            (correctAnswers / questions.length) * 100
         }%`;
-    };
-
-    submitButton.addEventListener("click", showResults);
-};
-
+    });
+});
 //HOW TO calculate the result
 //You can do it in 2 ways:
 //If you are presenting all questions together, just take all the radio buttons and check if the selected answer === correct_answer
