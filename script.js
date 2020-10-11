@@ -103,7 +103,6 @@ const shuffleArray = function (array) {
 };
 
 const quizContainer = document.getElementById("quiz");
-const submitButton = document.getElementById("submit");
 
 document.addEventListener("DOMContentLoaded", () => {
     //IF YOU ARE DISPLAYING ALL THE QUESTIONS TOGETHER:
@@ -136,17 +135,72 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         output.push(
-            `<div class="slide"
-            <div class="question">
-                ${question.question}
+            `<div class="page">
+                <div class="question">
+                    ${question.question}
+                </div>
+                <div class="answers">${outputChoices.join("")}</div>
             </div>
-            <div class="answers">${outputChoices.join("")}</div>
-            </div>`
+            `
         );
         // console.log(outputChoices.join());
     });
     quizContainer.innerHTML = output.join("");
 
+    const pages = quizContainer.querySelectorAll(".page");
+    const startButton = document.getElementById("start");
+    const previousButton = document.getElementById("previous");
+    const nextButton = document.getElementById("next");
+    const submitButton = document.getElementById("submit");
+    const h2 = document.querySelector("h2");
+
+    pages.forEach((page) => {
+        page.style.display = "none";
+    });
+    let currentPageNumber = 0;
+    console.log(currentPageNumber);
+
+    // First time user clics start button
+    startButton.addEventListener("click", function () {
+        h2.innerText = "Select one of them";
+        startButton.style.display = "none";
+        nextButton.style.display = "inline-block";
+        pages[currentPageNumber].style.display = "block";
+
+        // Increase current page number by one
+        console.log("quiz started", currentPageNumber);
+    });
+
+    // When next button clicked
+    nextButton.addEventListener("click", function () {
+        if (currentPageNumber < questions.length - 1) {
+            pages[currentPageNumber].style.display = "none";
+            currentPageNumber += 1;
+            pages[currentPageNumber].style.display = "block";
+
+            if (currentPageNumber === 9) {
+                nextButton.style.display = "none";
+            }
+        }
+        submitButton.style.display = "inline-block";
+        previousButton.style.display = "inline-block";
+
+        console.log("next button", currentPageNumber);
+    });
+
+    // When pevious buttin clicked
+    previousButton.addEventListener("click", function () {
+        if (currentPageNumber > 0) {
+            pages[currentPageNumber].style.display = "none";
+            currentPageNumber -= 1;
+            pages[currentPageNumber].style.display = "block";
+            nextButton.style.display = "inline-block";
+        } else {
+            previousButton.style.display = "none";
+        }
+    });
+
+    // When the submit button clicked
     submitButton.addEventListener("click", function () {
         const resultContainer = document.getElementById("result");
 
@@ -163,6 +217,12 @@ document.addEventListener("DOMContentLoaded", () => {
         // To store user's correct answers
         let correctAnswers = 0;
 
+        const input = quizContainer.querySelectorAll("input");
+        console.log(input);
+        input.forEach((input) => {
+            input.disabled = true;
+        });
+
         // }
         questions.forEach((question, number) => {
             const answerContainer = answerContainers[number];
@@ -170,6 +230,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // console.log(answerContainer);
             //
+
             const selector = `input[name=question${number}]:checked`;
 
             userAnswer = (answerContainer.querySelector(selector) || {}).value;
@@ -187,6 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
         resultContainer.innerHTML = `Your score ${
             (correctAnswers / questions.length) * 100
         }%`;
+        submitButton.disabled = true;
     });
 });
 //HOW TO calculate the result
