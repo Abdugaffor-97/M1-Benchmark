@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
     outputFirstQuiz = makeQuizFunc(questions);
     quizContainer.innerHTML = outputFirstQuiz.join("");
 
-    const pages = quizContainer.querySelectorAll(".page");
+    let pages = quizContainer.querySelectorAll(".page");
     const startButton = document.getElementById("start");
     const previousButton = document.getElementById("previous");
     const nextButton = document.getElementById("next");
@@ -198,7 +198,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 previousButton.style.display = "none";
                 nextQuizButton.style.display = "none";
                 currentPageNumber = 0;
+                pages = quizContainer.querySelectorAll(".page");
 
+                // Set display properties to none for second quiz which is fetched from the internet
+                pages.forEach((page) => (page.style.display = "none"));
+                startQuizFunc();
+                submitButton.disabled = false;
             });
     });
 
@@ -235,6 +240,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // When the submit button clicked
+    // To know howmany times clicked submit button I created variable
+    let countClickSubmit = 0;
     submitButton.addEventListener("click", function () {
         const resultContainer = document.getElementById("result");
 
@@ -284,7 +291,10 @@ document.addEventListener("DOMContentLoaded", () => {
         submitButton.disabled = true;
 
         // More advanced quiz
-        if (userScore >= 0) {
+
+        countClickSubmit += 1;
+        console.log(`submit clicked: ${countClickSubmit}`);
+        if (userScore >= 0 && countClickSubmit < 2) {
             nextQuizButton.style.display = "block";
         }
     });
