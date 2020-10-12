@@ -104,17 +104,10 @@ const shuffleArray = function (array) {
 
 const quizContainer = document.getElementById("quiz");
 
-document.addEventListener("DOMContentLoaded", () => {
-    //IF YOU ARE DISPLAYING ALL THE QUESTIONS TOGETHER:
-    //HINT: for each question, create a container with the "question"
-    //create a radio button https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/radio with, as option the both the correct answer and the incorrect answers
-    //when EVERY question has an answer (google for how to get a value from a radio button with JS)
-    //IF YOU ARE DISPLAYING ONE QUESTION AT A TIME
-    //Display first question with a title + radio button
-    //when the user select the answer, pick the next question and remove this from the page after added in a varible the users' choice.
-    // Storing all of the questions and answer choices
+// Created make quiz function. Later on I uset it to make second quiz
+const makeQuizFunc = function (questionsForQiuiz) {
     const output = [];
-    questions.forEach((question, number) => {
+    questionsForQiuiz.forEach((question, number) => {
         // console.log(question);
 
         question["choices"] = (
@@ -125,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         let outputChoices = [];
 
-        question.choices.forEach((choice, num) => {
+        question.choices.forEach((choice) => {
             outputChoices.push(
                 `<label>
                 <input type="radio" name="question${number}" value="${choice}">
@@ -145,7 +138,24 @@ document.addEventListener("DOMContentLoaded", () => {
         );
         // console.log(outputChoices.join());
     });
-    quizContainer.innerHTML = output.join("");
+    return output;
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+    //IF YOU ARE DISPLAYING ALL THE QUESTIONS TOGETHER:
+    //HINT: for each question, create a container with the "question"
+    //create a radio button https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/radio with, as option the both the correct answer and the incorrect answers
+    //when EVERY question has an answer (google for how to get a value from a radio button with JS)
+    //IF YOU ARE DISPLAYING ONE QUESTION AT A TIME
+    //Display first question with a title + radio button
+    //when the user select the answer, pick the next question and remove this from the page after added in a varible the users' choice.
+    // Storing all of the questions and answer choices
+    // const output = [];
+    // questions.forEach((question, number) => {
+    //     // console.log(question);
+
+    outputFirstQuiz = makeQuizFunc(questions);
+    quizContainer.innerHTML = outputFirstQuiz.join("");
 
     const pages = quizContainer.querySelectorAll(".page");
     const startButton = document.getElementById("start");
@@ -154,14 +164,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const submitButton = document.getElementById("submit");
     const h2 = document.querySelector("h2");
 
+    const nextQuizButton = document.getElementById("next-quiz");
+
     pages.forEach((page) => {
         page.style.display = "none";
     });
     let currentPageNumber = 0;
     console.log(currentPageNumber);
 
-    // First time user clics start button
-    startButton.addEventListener("click", function () {
+    // Start quiz function runs when start bunnton clicked
+    const startQuizFunc = function () {
         h2.innerText = "Select one of them";
         startButton.style.display = "none";
         nextButton.style.display = "inline-block";
@@ -169,7 +181,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Increase current page number by one
         console.log("quiz started", currentPageNumber);
+    };
+
+    nextQuizButton.addEventListener("click", function () {
+        fetch(
+            "https://opentdb.com/api.php?amount=10&category=18&difficulty=easy"
+        )
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data.results);
+                outputSecondQuiz = makeQuizFunc(data.results);
+                console.log(outputSecondQuiz);
+                quizContainer.innerHTML = outputSecondQuiz.join("");
+
+                //
+                previousButton.style.display = "none";
+                nextQuizButton.style.display = "none";
+                currentPageNumber = 0;
+
+            });
     });
+
+    // First time user clics start button
+    startButton.addEventListener("click", startQuizFunc);
 
     // When next button clicked
     nextButton.addEventListener("click", function () {
@@ -245,11 +279,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 questionContainer.style.color = "red";
             }
         });
-        resultContainer.innerHTML = `Your score ${
-            (correctAnswers / questions.length) * 100
-        }%`;
+        let userScore = (correctAnswers / questions.length) * 100;
+        resultContainer.innerHTML = `Your score ${userScore}%`;
         submitButton.disabled = true;
+
+        // More advanced quiz
+        if (userScore >= 0) {
+            nextQuizButton.style.display = "block";
+        }
     });
+    // const buttonNextQuiz = document.querySelector("#next-quiz");
 });
 //HOW TO calculate the result
 //You can do it in 2 ways:

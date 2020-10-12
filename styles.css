@@ -12,6 +12,7 @@ label {
 
 #previous,
 #next,
-#submit {
+#submit,
+#next-quiz {
     display: none;
 }
